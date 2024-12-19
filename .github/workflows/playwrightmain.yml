@@ -1,0 +1,46 @@
+workflow-name: First WorkFlow
+
+stages:
+  - install
+  - test
+
+default:
+  image: node:16
+  before_script:
+    - npm install -g npm@latest
+    - npm install --force
+
+variables:
+  CI: true
+
+cache:
+  paths:
+    - node_modules/
+
+install_dependencies:
+  stage: install
+  script:
+    - echo "Installing dependencies..."
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+run_playwright_tests:
+  stage: test
+  script:
+    - echo "Running Playwright tests..."
+    - npx playwright install
+    - npx playwright test
+  artifacts:
+    paths:
+      - test-results/
+    reports:
+      junit: test-results/junit.xml
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - unknown_failure
+  only:
+    - main
