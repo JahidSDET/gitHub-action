@@ -19,10 +19,10 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'  # Use the Node.js version you want
+        node-version: '14'
 
     - name: Install dependencies
       run: npm install
 
     - name: Run the Node.js program
-      run: node your-program.js  # Replace with your file name
+      run: node src/your-program.js  # Update the path if necessary
