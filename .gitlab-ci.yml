@@ -1,0 +1,42 @@
+stages:
+  - download
+  - install
+  - test
+
+cache:
+  paths:
+    - node_modules/
+
+variables:
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "false"
+
+download_github_files:
+  stage: download
+  script:
+    - echo "Downloading specific files from GitHub"
+    - curl -O https://github.com/JahidSDET/playWrightFrameWork.git
+
+install_dependencies:
+  stage: install
+  script:
+    - echo "Installing dependencies"
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+test:
+  stage: test
+  script:
+    - echo "Running Playwright tests"
+    - npx playwright install-deps
+    - npx playwright test
+  artifacts:
+    when: always
+    paths:
+      - playwright-report/
+    reports:
+      junit:
+        - playwright-report/*.xml
+  coverage:
+    regexp: '\\d+\\.\\d+% \\) lines'
